@@ -299,113 +299,27 @@ LRESULT CALLBACK DLLWindowProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     return 0;
 }
 
-//BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call,LPVOID lpReserved)
-//{
-//	if(ul_reason_for_call==DLL_PROCESS_ATTACH) {
-//		inj_hModule = hModule;
-//		CreateThread(0, NULL, ThreadProc, (LPVOID)L"Window Title", NULL, NULL);
-//	}
-//	return TRUE;
-//}
-
-//__declspec(dllexport) void startConectionMonitor()
+/**
+ * Start thread to Monitor the capture routine for data capture routine
+ */
 void startConectionMonitor()
 {
 
 	ghMutexWiiDelete = CreateMutex( 
         NULL,              // default security attributes
         FALSE,             // initially not owned
-        "WiiDeleteWait");             // unnamed mutex
+        "WiiDeleteWait");  // unnamed mutex
 
 	if (ghMutexWiiDelete == NULL) 
 		MessageBox(S->hWnd, "::CreateMutex Error", "ERROR", MB_OK);
 	
 	connectionMonitorStatus = true;
-	
-	// remoteData prData[5];
-	//HANDLE hConnection;
-	//DWORD thConnectionId;
-	//hConnection = CreateThread(NULL,
-	//	0,
-	//	CheckConnectionThreadRoutine,
-	//	prData,
-	//	0,
-	//	&thConnectionId);
 	hHandleConectionMonitor = CreateThread(NULL,0,MonitorConnectionsThreadRoutine, NULL,0, &ThreadIdConectionMonitor);
 }
 
-//struct sendData sSaida;
-//
-//DWORD WINAPI CheckConnectionThreadRoutine(LPVOID lpArg)
-//{
-//	wiimote *wiiMoteTmp = new wiimote;
-//
-//	remoteData *internalrData;
-//	internalrData = (struct remoteData *) lpArg;
-//	// dispara thread para controlar balança encontrada, caso encontre
-//	// evita varias balanças conectadas
-//	int n = 0;
-//	
-//	do{
-//		if(wiiMoteTmp->Connect(wiimote::FIRST_AVAILABLE))
-//		{
-//			if(n < 4)
-//			{
-//				if(wiiMoteTmp->IsBalanceBoard())
-//				{
-//					MessageBox(NULL, "Balance Found\n", "Aviso", MB_OK);
-//					// BRIGHT_WHITE;_tprintf(_T("  (Balance Board %d)\n"), n);
-//					internalrData[n].remote = wiiMoteTmp;
-//					internalrData[n].remote->SetLEDs(0x0f);
-//					internalrData[n].isEnable = true;
-//					wiiMoteTmp->SetReportType(wiimote::IN_BUTTONS_BALANCE_BOARD);
-//					sSaida.n = n+1;
-//					n++;
-//					if(n <= 4)
-//						wiiMoteTmp = new wiimote;
-//					continue;
-//				}
-//			}
-//
-//			if(!wiiMoteTmp->IsBalanceBoard())
-//			{
-//				MessageBox(NULL, "Generic Found\n", "Aviso", MB_OK);
-//				// controle normal, armazena info na estrutura 5 neste caso
-//				internalrData[4].remote = wiiMoteTmp;
-//				internalrData[4].remote->SetLEDs(0x01);
-//				internalrData[4].isEnable = true;
-//				sSaida.n = 5;
-//
-//				//wiiMoteTmp->SetReportType(wiimote::IN_BUTTONS_ACCEL_IR);
-//
-//				/*if(wiiMoteTmp->MotionPlusConnected())
-//				{
-//				printf("Motion Plus Enabled\n");
-//				wiiMoteTmp->EnableMotionPlus();
-//				getchar();
-//				}*/
-//
-//				wiiMoteTmp->ChangedCallback		= on_state_change;
-//				//  notify us only when the wiimote connected sucessfully, or something
-//				//   related to extensions changes
-//				wiiMoteTmp->CallbackTriggerFlags = (state_change_flags)(CONNECTED |
-//					EXTENSION_CHANGED |
-//					MOTIONPLUS_CHANGED);
-//
-//				//rData[i].remote->MotionPlus.Speed.Yaw
-//				//wiiMoteTmp->SetReportType(wiimote::IN_BUTTONS_ACCEL_IR);
-//
-//				if(n <= 4)
-//					wiiMoteTmp = new wiimote;
-//				continue;
-//			}
-//		}
-//	} while(connectionMonitorStatus);
-//	
-//	ExitThread(0);
-//	// return 
-//}
-
+/*
+ * This is the main loop that keep trying to receive data
+ */
 DWORD WINAPI MonitorConnectionsThreadRoutine(LPVOID lpArg)
 {
 	wiimote *wiiMoteTmp;
@@ -421,12 +335,6 @@ DWORD WINAPI MonitorConnectionsThreadRoutine(LPVOID lpArg)
 	cmClock = getClockms();
 	
 	cmFps = 0;
-	//while((clockI - clockIAnt) < 0.01)
-	//{
-	//	clockI = getClockms();
-	//	// printf("clockI %f", clockI);
-	//}
-
 	int n = 0;
 	do{
 		cmClockAnt = cmClock;
@@ -434,7 +342,7 @@ DWORD WINAPI MonitorConnectionsThreadRoutine(LPVOID lpArg)
 
 		cmFps = mix(cmFps, cmClock-cmClockAnt, 0.01f);
 
-		if(wiiMoteTmp->Connect(wiimote::FIRST_AVAILABLE)) { //wiimote::FIRST_AVAILABLE)) {
+		if(wiiMoteTmp->Connect(wiimote::FIRST_AVAILABLE)) {
 			// gotoxys(0,20); printf("BALANCA RECONHECIDA\n");
 			
 			// gotoxys(0,6); printf("Extension type %d", wiiMoteTmp->ExtensionType);
