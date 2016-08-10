@@ -22,7 +22,10 @@ Further updates will be provided to this project, as it is very messy now.
 # USAGE:
 
 Load the DLL inside your unity project based on the WIPCam.cs C# script
-To test if the DLL was load correctly, you can can inside unity confirmMsg(). A messageBox should be displayed
+WIPCanRedirect contains a example for use with partial CAVEs. It is a redirection technique to be used in this envs.
+
+To test if the DLL was load correctly, you can can inside unity confirmMsg().
+    A messageBox should be displayed
 
 1. To start, call init() inside dll. Assure no one is on top of the balances.
     This will load all the balances inside the dll and start processing the orientation.
