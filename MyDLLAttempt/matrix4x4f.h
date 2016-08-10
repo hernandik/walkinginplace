@@ -10,11 +10,8 @@
 #define _MATRIX4X4F_H_
 
 #include <stdio.h>
-//#include "basic.h"
 #include "constants.h"
 #include "vetorial.h"
-// #include "cam.h"
-// #include "..\glew-1.9.0\include\GL\glew.h"
 #include <pmmintrin.h>
 
 #define DEGTORAD(degree) ((degree) * (3.141592654f / 180.0f))
@@ -28,7 +25,6 @@ public:
 
     matrix4x4f()
 	{
-		//printf("matrix4x4f:: align this %d m %d\n", IsAlign(this), IsAlign(m));
 		identity();
 	}
 
@@ -52,16 +48,6 @@ public:
 	{
 		for(int i=0; i<16; i++)
 			m[i] = aa.m[i];
-
-		//__m128 a, b, c, d;
-		//a = _mm_load_ps(&aa.m[0]);
-		//b = _mm_load_ps(&aa.m[4]);
-		//c = _mm_load_ps(&aa.m[8]);
-		//d = _mm_load_ps(&aa.m[12]);
-		//_mm_store_ps(&m[0],a);
-		//_mm_store_ps(&m[4],b);
-		//_mm_store_ps(&m[8],c);
-		//_mm_store_ps(&m[12],d);
 		return *this;
 	};
 
@@ -78,34 +64,12 @@ public:
 		matrix4x4f c;
 
 		c.mmul_sse_unroll(m, b.m); //, float * r)
-
-		//c.m[0]= (this->m[0] * b.m[0]) + (this->m[4] * b.m[1]) + (this->m[8] * b.m[2]) + (this->m[12] * b.m[3]);
-		//c.m[4]= (this->m[0] * b.m[4]) + (this->m[4] * b.m[5]) + (this->m[8] * b.m[6]) + (this->m[12] * b.m[7]);
-		//c.m[8]= (this->m[0] * b.m[8]) + (this->m[4] * b.m[9]) + (this->m[8] * b.m[10]) + (this->m[12] * b.m[11]);
-		//c.m[12]= (this->m[0] * b.m[12]) + (this->m[4] * b.m[13]) + (this->m[8] * b.m[14]) + (this->m[12] * b.m[15]);
-
-		//c.m[1]= (this->m[1] * b.m[0]) + (this->m[5] * b.m[1]) + (this->m[9] * b.m[2]) + (this->m[13] * b.m[3]);
-		//c.m[5]= (this->m[1] * b.m[4]) + (this->m[5] * b.m[5]) + (this->m[9] * b.m[6]) + (this->m[13] * b.m[7]);
-		//c.m[9]= (this->m[1] * b.m[8]) + (this->m[5] * b.m[9]) + (this->m[9] * b.m[10]) + (this->m[13] * b.m[11]);
-		//c.m[13]= (this->m[1] * b.m[12]) + (this->m[5] * b.m[13]) + (this->m[9] * b.m[14]) + (this->m[13] * b.m[15]);
-
-		//c.m[2]= (this->m[2] * b.m[0]) + (this->m[6] * b.m[1]) + (this->m[10] * b.m[2]) + (this->m[14] * b.m[3]);
-		//c.m[6]= (this->m[2] * b.m[4]) + (this->m[6] * b.m[5]) + (this->m[10] * b.m[6]) + (this->m[14] * b.m[7]);
-		//c.m[10]= (this->m[2] * b.m[8]) + (this->m[6] * b.m[9]) + (this->m[10] * b.m[10]) + (this->m[14] * b.m[11]);
-		//c.m[14]= (this->m[2] * b.m[12]) + (this->m[6] * b.m[13]) + (this->m[10] * b.m[14]) + (this->m[14] * b.m[15]);
-
-		//c.m[3]= (this->m[3] * b.m[0]) + (this->m[7] * b.m[1]) + (this->m[11] * b.m[2]) + (this->m[15] * b.m[3]);
-		//c.m[7]= (this->m[3] * b.m[4]) + (this->m[7] * b.m[5]) + (this->m[11] * b.m[6]) + (this->m[15] * b.m[7]);
-		//c.m[11]= (this->m[3] * b.m[8]) + (this->m[7] * b.m[9]) + (this->m[11] * b.m[10]) + (this->m[15] * b.m[11]);
-		//c.m[15]= (this->m[3] * b.m[12]) + (this->m[7] * b.m[13]) + (this->m[11] * b.m[14]) + (this->m[15] * b.m[15]);
-
 		return c;
 	};
 
 	void* operator new(size_t s)
 	{
 		void *a = _aligned_malloc(s, 16);
-		//printf("matrix4x4f::new %d\n", IsAlign(a));
 		return a;
 	};
 
@@ -144,7 +108,6 @@ public:
 		__m128 s0, x0, x1, x2, x3, r_line;
 		
 		// unroll the first step of the loop to avoid having to initialize r_line to zero
-
 		// carrego apenas uma vez
 		x0 = _mm_load_ps(a);         // a_line = vec4(column(a, 0))
 		x1 = _mm_load_ps(&a[4]); // a_line = vec4(column(a, j))
@@ -275,69 +238,29 @@ public:
 			q[0],q[1],q[2],q[3],
 			sqrt(pow(q[0],2.0f)+pow(q[1],2.0f)+pow(q[2],2.0f)+pow(q[3],2.0f)));
 		
-		/*vec4 *s;
-		vec4 S;
-		s = (vec4*) q;
-		s->norm();
-		S = *s;*/
-		
-		//s->x = S.w;
-		//s->y = S.x;
-		//s->z = S.y;
-		//s->w = S.z;
+	    double sqw = q[3]*q[3];
+	    double sqx = q[0]*q[0];
+	    double sqy = q[1]*q[1];
+	    double sqz = q[2]*q[2];
 
-		//q[0] = q[0] * sin(q[3]/2.0);// * piover180);
-		//q[1] = q[1] * sin(q[3]/2.0);//* piover180);
-		//q[2] = q[2] * sin(q[3]/2.0);//* piover180);
-		//q[3] = cos(q[3]/2.0);
-
-    double sqw = q[3]*q[3];
-    double sqx = q[0]*q[0];
-    double sqy = q[1]*q[1];
-    double sqz = q[2]*q[2];
-
-    // invs (inverse square length) is only required if quaternion is not already normalised
-    double invs = 1 / (sqx + sqy + sqz + sqw);
-    m[0] = ( sqx - sqy - sqz + sqw)*invs ; // since sqw + sqx + sqy + sqz =1/invs*invs
-    m[5] = (-sqx + sqy - sqz + sqw)*invs ;
-    m[10] = (-sqx - sqy + sqz + sqw)*invs ;
-    
-    double tmp1 = q[0]*q[1];
-    double tmp2 = q[2]*q[3];
-    m[1] = 2.0 * (tmp1 + tmp2)*invs ;
-    m[4] = 2.0 * (tmp1 - tmp2)*invs ;
-    tmp1 = q[0]*q[2];
-    tmp2 = q[1]*q[3];
-    m[2] = 2.0 * (tmp1 - tmp2)*invs ;
-    m[8] = 2.0 * (tmp1 + tmp2)*invs ;
-    tmp1 = q[1]*q[2];
-    tmp2 = q[0]*q[3];
-    m[6] = 2.0 * (tmp1 + tmp2)*invs ;
-    m[9] = 2.0 * (tmp1 - tmp2)*invs ;   
-
-		//m[0] = q[3]*q[3] + q[0]*q[0] - q[1]*q[1] - q[2]*q[2];
-		//m[1] = 2*(q[0]*q[1]+q[2]*q[3]);
-		//m[2] = 2*(q[0]*q[2]-q[1]*q[3]);
-
-		//m[4] = 2*(q[0]*q[1]-q[2]*q[3]);
-		//m[5] = q[3]*q[3] - q[0]*q[0] + q[1]*q[1] - q[2]*q[2];
-		//m[6] = 2*(q[1]*q[2]+q[0]*q[3]);
-
-		//m[8] = 2*(q[0]*q[2]+q[1]*q[3]);
-		//m[9] = 2*(q[1]*q[2]-q[0]*q[3]);
-		//m[10] = q[3]*q[3] - q[0]*q[0] - q[1]*q[1] + q[2]*q[2];
-
-		//m[0] = q[0]*q[0] + q[3]*q[3] - q[2]*q[2] - q[1]*q[1];
-		//m[1] = 2*(q[3]*q[2]+q[1]*q[0]);
-		//m[2] = 2*(q[3]*q[1]-q[2]*q[0]);
-
-		//m[4] = 2*(q[3]*q[2]-q[1]*q[0]);
-		//m[5] = q[0]*q[0] - q[3]*q[3] + q[2]*q[2] - q[1]*q[1];
-		//m[6] = 2*(q[2]*q[1]+q[3]*q[0]);
-
-		//m[8] = 2*(q[3]*q[1]+q[2]*q[0]);
-		//m[9] = 2*(q[2]*q[1]-q[3]*q[0]);
-		//m[10] = q[0]*q[0] - q[3]*q[3] - q[2]*q[2] + q[1]*q[1];
+	    // invs (inverse square length) is only required if quaternion is not already normalised
+	    double invs = 1 / (sqx + sqy + sqz + sqw);
+	    m[0] = ( sqx - sqy - sqz + sqw)*invs ; // since sqw + sqx + sqy + sqz =1/invs*invs
+	    m[5] = (-sqx + sqy - sqz + sqw)*invs ;
+	    m[10] = (-sqx - sqy + sqz + sqw)*invs ;
+	    
+	    double tmp1 = q[0]*q[1];
+	    double tmp2 = q[2]*q[3];
+	    m[1] = 2.0 * (tmp1 + tmp2)*invs ;
+	    m[4] = 2.0 * (tmp1 - tmp2)*invs ;
+	    tmp1 = q[0]*q[2];
+	    tmp2 = q[1]*q[3];
+	    m[2] = 2.0 * (tmp1 - tmp2)*invs ;
+	    m[8] = 2.0 * (tmp1 + tmp2)*invs ;
+	    tmp1 = q[1]*q[2];
+	    tmp2 = q[0]*q[3];
+	    m[6] = 2.0 * (tmp1 + tmp2)*invs ;
+	    m[9] = 2.0 * (tmp1 - tmp2)*invs ;   
 	};
 
 	void swap(int u, int v)

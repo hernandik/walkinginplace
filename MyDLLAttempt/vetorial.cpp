@@ -10,9 +10,6 @@ vec3f vec3f::operator + ( void )
 vec3f vec3f::operator - ( void ) 
 {
     vec3f vResult(-x, -y, -z);
-	//x = -x;
-	//y = -y;
-	//z = -z;
     return vResult;
 }
 
@@ -33,15 +30,6 @@ vec3f& vec3f::operator -= ( const vec3f &other )
 
     return *this;
 }
-/*
-vec3f vec3f::operator= (const vector4f &a)
-{
-	vec3f b;
-	b.x = a.x;
-	b.y = a.y;
-	b.z = a.z;
-	return b;
-}*/
 
 vec3f operator * ( const float scalar, const vec3f &other )
 {

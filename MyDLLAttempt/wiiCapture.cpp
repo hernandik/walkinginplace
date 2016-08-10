@@ -1,22 +1,15 @@
 #include "stdafx.h"
 #include <string>
-// #include <Dinput.h>
 #include <math.h>
 #include <fstream>
 #include <conio.h>
 #include <vector>
-// #include <atlstr.h>
-
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
-
 #include "stdafx.h"
 #include "windows.h"
 #include "wiiCap.h"
-// #include "wiiBalBoard.h"
-
-
 
 #define MYMENU_EXIT         (WM_APP + 101)
 #define MYMENU_MESSAGEBOX   (WM_APP + 102) 
@@ -57,11 +50,10 @@ bool inited=false;
 BOOL RegisterDLLWindowClass(wchar_t szClassName[])
 {
     WNDCLASSEXW wc;
-    wc.hInstance =  inj_hModule; // S->hInstance;	// inj_hModule;
-	//wc.lpszClassName = (LPCWSTR)L"WIPDLLMessageSystem";
+    wc.hInstance =  inj_hModule;
     wc.lpszClassName = (LPCWSTR)szClassName;
     wc.lpfnWndProc = DLLWindowProc;
-    wc.style =  CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS; //CS_DBLCLKS;
+    wc.style =  CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
     wc.cbSize = sizeof (WNDCLASSEX);
     wc.hIcon = LoadIcon (NULL, IDI_APPLICATION);
     wc.hIconSm = LoadIcon (NULL, IDI_APPLICATION);
@@ -98,16 +90,8 @@ DWORD WINAPI MainThreadProc( LPVOID lpParam )
     MSG messages;
 	
 	wchar_t *pString = reinterpret_cast<wchar_t * > (lpParam);
-	// HMENU hMenu = CreateDLLWindowMenu();
-	// RegisterDLLWindowClass(L"WIPDLLMessageSystem"); //(L"InjectedDLLWindowClass");
-	
-	// prnt_hWnd = FindWindowW(L"Window Injected Into ClassName", L"Window Injected Into Caption");
-	//hwnd = CreateWindowExW (0, L"WIPDLLMessageSystem", pString, WS_EX_PALETTEWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 400, 300, prnt_hWnd, hMenu, inj_hModule, NULL ); // 
-	// ShowWindow (hwnd, SW_SHOWNORMAL);
-	
 	struct sendData *sensorData;
 	sensorData = new struct sendData;
-	//AMBIENTE a;
 #ifdef ENABLEWII
 	Wii = new wii();
 	memset(sensorData, 0, sizeof(struct sendData));
@@ -119,58 +103,16 @@ DWORD WINAPI MainThreadProc( LPVOID lpParam )
 
 	inited = true;
 	killBalCheck = false;
-
-	//STARTUPINFO startupInfo;
- //   PROCESS_INFORMATION procInfo;
- //   BOOL success;
-
- //   GetStartupInfo(&startupInfo);
- //   success = CreateProcess(NULL,
-	//		L"child",
-	//		NULL, NULL, FALSE,
-	//		CREATE_NEW_CONSOLE,
-	//		NULL, NULL,
-	//		&startupInfo,
-	//		&procInfo);
-	//FreeConsole();
-	//AllocConsole();
-	//HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE); // procInfo.hProcess; // GetStdHandle(STD_OUTPUT_HANDLE);
-	//SetConsoleTitleW(L"Debug WIP - Não fechar, derruba UNITY");
- //   int hCrt = _open_osfhandle((long) handle_out, _O_TEXT);
- //   FILE* hf_out = _fdopen(hCrt, "w");
- //   setvbuf(hf_out, NULL, _IONBF, 1);
- //   *stdout = *hf_out;
-
 	bool done = false;
-	
 	mainFps =	0.0;
 	cmFps =		0.0;
-
 	deltaT =	100;
 	deltaS =	1;
 	velocidade = 100;
-
-	
-	//printf("TIMER INICIALIZADO!\n");
-	//clockI = getClockms();
-	//printf("PRIMEIRO GET CLOCK\n");
 	int p=0;
 	float segundos=0;
 
 	while(!done) {
-		//if (PeekMessage(&messages,NULL,0,0,PM_REMOVE)){
-		//	if (messages.message==WM_QUIT){
-		//		done=TRUE;
-		//	}else{
-		//		TranslateMessage(&messages);
-		//		DispatchMessage(&messages);
-		//	}
-		//}else{
-			//  while (GetMessage (&messages, NULL, 0, 0))
-			//  {
-			//TranslateMessage(&messages);
-			//      DispatchMessage(&messages);
-
 #ifdef ENABLEWII
 			clockI = getClockms();	
 			clockIAnt = clockI;
@@ -178,19 +120,10 @@ DWORD WINAPI MainThreadProc( LPVOID lpParam )
 			while((clockI - clockIAnt) < 0.01)
 			{
 				clockI = getClockms();
-				// printf("clockI %f", clockI);
 			}
 			
 			segundos += clockI-clockIAnt;
-			
-			//gotoxys(0,10); printf("Segundos %f", segundos);
-			
-			// pClock();
-
-			// gotoxys(0,0);
-				mainFps = mix(mainFps, clockI - clockIAnt, 0.1f);//deltaT
-				//printf("DELTAT %f clock %f FPS %f ConnMonFPS %f", deltaT, clock, (float)1/lowFPS, (float)1/cmFps);
-
+			mainFps = mix(mainFps, clockI - clockIAnt, 0.1f);
 			p++;
 			int i = 0;
 			for(std::vector<wiimote *>::iterator iter = rData.begin(); iter != rData.end(); ++iter) {
@@ -200,12 +133,6 @@ DWORD WINAPI MainThreadProc( LPVOID lpParam )
 					{
 					case wiimote_state::BALANCE_BOARD:
 						{
-			//				printf("%6.2f %6.2f %6.2f %6.2f Bat %d",
-			//					(*iter)->BalanceBoard.Kg.BottomL,
-			//					(*iter)->BalanceBoard.Kg.BottomR,
-			//					(*iter)->BalanceBoard.Kg.TopL,
-			//					(*iter)->BalanceBoard.Kg.TopR,
-			//					(*iter)->BatteryRaw);
 							memcpy(&sensorData->sensor[i],
 								&(*iter)->BalanceBoard.Kg,
 								sizeof(struct sensors_f));
@@ -219,34 +146,6 @@ DWORD WINAPI MainThreadProc( LPVOID lpParam )
 
 			Wii->nBalConnectadas = i;
 			Wii->proc4bb();
-
-			/* gotoxys(0,4); printf("Wii %f %f %f %f\n",
-				Wii->refVertex.x, Wii->refVertex.y, Wii->refVertex.z, Wii->refVertex.w);
-			gotoxys(0,5); printf("n Balancas struct %d", rData.size());*/
-
-			//DWORD dwWaitResult = WaitForSingleObject( 
-			//	ghMutexWiiDelete,    // handle to mutex
-			//	INFINITE);  // no time-out interval
-			//switch (dwWaitResult) 
-			//{
-   //         // The thread got ownership of the mutex
-			//	case WAIT_OBJECT_0: 
-			//	int i=0;
-			//	for(std::vector<wiimote *>::iterator iter = rData.begin(); iter != rData.end(); ++iter) {
-			//		gotoxys(0,7+i);
-			//		printf("Balance %d is ON", i);
-			//		i++;
-			//		//(*iter)->Disconnect(); // ConnectionLost())
-			//	}
-			//	ReleaseMutex(ghMutexWiiDelete);
-			//}
-
-			//int i=0;
-			//for(std::vector<wiimote *>::iterator iter = rData.begin(); iter != rData.end(); ++iter) {
-			//	// gotoxys(0,7+i);
-			//	// printf("Balance %d is ON", i);
-			//	i++;
-			//}
 #endif
 	}
     return 1;
@@ -261,15 +160,9 @@ LRESULT CALLBACK DLLWindowProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM l
     {
 		case WM_COPYDATA:
 		{
-			
-			//WaitForSingleObject( 
-			//	ghMutex,    // handle to mutex
-			//	INFINITE);  // no time-out interval
-
 			pMyCDS = (PCOPYDATASTRUCT) lParam;
 			switch( pMyCDS->dwData ){
 			case MSG_WIIMOTE1:
-				//MessageBox(hwnd, L"Recebido COPYDATA", L"OK", MB_OK);
 				// Desativado, agora as mensagens da balanca sao capturadas por uma thread interna do programa
 				// 30/9/2014
 				// memcpy( &sensorData, (LPSTR) pMyCDS->lpData, sizeof(struct sendData));
@@ -282,7 +175,6 @@ LRESULT CALLBACK DLLWindowProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM l
                {
                     case MYMENU_EXIT:
 						ShowWindow(hwnd, SW_HIDE);
-						//SendMessage(hwnd, WM_CLOSE, 0, 0);
                         break;
                     case MYMENU_MESSAGEBOX:
 						// para teste da thread e de SendMessage interno
@@ -324,11 +216,7 @@ DWORD WINAPI MonitorConnectionsThreadRoutine(LPVOID lpArg)
 {
 	wiimote *wiiMoteTmp;
 	wiiMoteTmp = new wiimote;
-
-	// MessageBox(NULL, L"Thread Monitor Iniciada", L"Aviso", MB_OK);
-	// remoteData *rData = new remoteData;
 	connectionMonitorStatus = true; // sinalizador simples
-	//LPWSTR msg = new wchar_t[256];
 	char *msg = new char[512];
 
 	double cmClock, cmClockAnt;
@@ -343,31 +231,18 @@ DWORD WINAPI MonitorConnectionsThreadRoutine(LPVOID lpArg)
 		cmFps = mix(cmFps, cmClock-cmClockAnt, 0.01f);
 
 		if(wiiMoteTmp->Connect(wiimote::FIRST_AVAILABLE)) {
-			// gotoxys(0,20); printf("BALANCA RECONHECIDA\n");
-			
-			// gotoxys(0,6); printf("Extension type %d", wiiMoteTmp->ExtensionType);
 			sprintf(msg, "Balanca reconhecida, extension type %d (5 é Balança)\n", wiiMoteTmp->ExtensionType);
-			// MessageBox(NULL, msg, "Aviso", MB_OK);
 			writeLogger(msg);
 
 			if(wiiMoteTmp->IsBalanceBoard()){
-				//MessageBox(NULL, "Balanca reconhecida, incluindo BBBBBB", "Aviso", MB_OK);
-				// BRIGHT_WHITE;_tprintf(_T("  (Balance Board %d)\n"), n);
-				//rData->remote = wiiMoteTmp;
-				//rData->remote
 				wiiMoteTmp->SetLEDs(0x0f);
-				//rData->isEnable = true;
 				wiiMoteTmp->SetReportType(wiimote::IN_BUTTONS_BALANCE_BOARD);
-				//sSaida.n = n+1;
-				//n++;
-				//if(n <= 4)
 				DWORD dwWaitResult;
 				dwWaitResult = WaitForSingleObject( 
 					ghMutexWiiDelete,    // handle to mutex
 					INFINITE);
 				switch (dwWaitResult) {	 // The thread got ownership of the mutex
 					case WAIT_OBJECT_0:
-						// rData.erase(iter);
 						rData.push_back(wiiMoteTmp);	// from this point, a new device was added!
 						ReleaseMutex(ghMutexWiiDelete);
 						break;
@@ -379,40 +254,20 @@ DWORD WINAPI MonitorConnectionsThreadRoutine(LPVOID lpArg)
 			
 			if(!wiiMoteTmp->IsBalanceBoard()) {
 				// controle normal, armazena info na estrutura 5 neste caso
-				// rData[4].remote = wiiMoteTmp;
 				wiiMoteTmp->SetLEDs(0x01);
-				//rData[4].isEnable = true;
-				//sSaida.n = 5;
-				
-				//wiiMoteTmp->SetReportType(wiimote::IN_BUTTONS_ACCEL_IR);
-
 				wiiMoteTmp->ChangedCallback		= on_state_change;
 				//  notify us only when the wiimote connected sucessfully, or something
 				//   related to extensions changes
 				wiiMoteTmp->CallbackTriggerFlags = (state_change_flags)(CONNECTED |
 					EXTENSION_CHANGED |
 					MOTIONPLUS_CHANGED);
-
-				//rData[i].remote->MotionPlus.Speed.Yaw
-				//wiiMoteTmp->SetReportType(wiimote::IN_BUTTONS_ACCEL_IR);
-				
-				// inserção de dispositivos que nao sao balancas removido temporariamente
-
-				// rData.push_back(wiiMoteTmp);	// from this point, a new device was added!
 				wiiMoteTmp = new wiimote;
-
 				continue;
 			}
 		}
 
-		// iterate throught all balances and disconnect them
-		//for(int i=0; i<rData.size(); i++) {
-
 		for(std::vector<wiimote *>::iterator iter = rData.begin(); iter != rData.end(); ) { // ++iter
-			// MessageBox(NULL, L"Deletando balanca", L"Aviso", MB_OK);
 			if((*iter)->ConnectionLost()) {
-			// if(rData[i]->ConnectionLost())
-				// MessageBox(NULL, "Deletando balanca", "Aviso", MB_OK);
 				sprintf(msg, "Uma balanca foi desconectada, cheque a LUZ da que desconectou (Bateria acabou?)\n");
 				writeLogger(msg);
 				// deleta item, mas antes lock recurso
@@ -436,12 +291,10 @@ DWORD WINAPI MonitorConnectionsThreadRoutine(LPVOID lpArg)
 		if(killBalCheck) {
 			sprintf(msg, "Fechando Thread que gerencia a conexão das balanças\n");
 			writeLogger(msg);
-			// MessageBox(NULL, "Fechando Thread", "Aviso", MB_OK);
 			return true;
 		}
 	}while(connectionMonitorStatus); // matar a thread aqui
 
-	// MessageBox(NULL, "Fechando Thread", "Aviso", MB_OK);
 	// desconecta todos os dispositivos
 	DWORD dwWaitResult;
 		dwWaitResult = WaitForSingleObject( 
@@ -587,7 +440,6 @@ __declspec(dllexport) void getVirtualDirection(vec3f *a) {
 
 __declspec(dllexport) void getSensorData(struct sendData *sD)
 {
-	// memcpy(sD, &sensorData, sizeof(struct sendData));
 	// ajustado para pegar os dados das balanças alinhados
 	if(!inited)	// nao inicializado ainda
 		return;
@@ -598,7 +450,6 @@ __declspec(dllexport) void getFPS(double *aa)
 {
 	aa[0] = mainFps;
 	aa[1] = cmFps;
-	// printf("%f %f\n",mainFps,cmFps);
 	return;
 }
 
@@ -611,7 +462,6 @@ __declspec(dllexport) void getLog(char *aaa) {
 
 __declspec(dllexport) void getLogW(WCHAR *aaa) {
 	swprintf(aaa, L"%s", logger);
-	//strcpy(aaa, logger);
 }
 
 // a deve conter 4 floats
@@ -623,7 +473,6 @@ __declspec(dllexport) void getOrientation(float *a){
 	a[2] = Wii->refVertex.z;
 	a[3] = Wii->refVertex.w;
 #endif
-	// (wiiTeste->refVertex * wiiTeste->outSpeed.x);
 }
 
 __declspec(dllexport) int init()

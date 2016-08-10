@@ -1,13 +1,8 @@
 #ifndef _WIIBALBOARD
 #define _WIIBALBOARD
 
-//#include <windows.h>
-//#include "basic.h"
-// #include "lineObj.h"
-
 //#include "filterLowPass_5-10hz.h"
 #include <vector>
-// #include "baseClass.h"
 #include "super_Basic.h"
 #include "derivada.h"
 #include "wiiCap.h"
@@ -201,15 +196,12 @@ public:
 
 	void setInput1(struct sensors_f *a); // depreciado
 	void setInput2(struct sensors_f *a); // depreciado
-	void procDerivada();//vec3f *a);
-	//void procDerivada2(vec3f *a);
-	void procDerNew();//vec3f *a);
-	void procStep();//vec3f *a);
+	void procDerivada();
+	void procDerNew();
+	void procStep();
 	void config();
 	void genWalkGraf(char *file);
-	//baseClass *genOneWalkGraf();
-	// baseClass *genOneWalkGraf(COLOR c);
-	
+
 	float stepBuffer;
 	float stepBufferThreshold;
 	float deltaRotation;
